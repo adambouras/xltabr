@@ -21,7 +21,7 @@ body_initialise <- function(tab) {
 #' of the table
 #'
 #' @export
-add_body <- function(tab, df, left_header_colnames = NULL, row_style_names = NULL, left_header_style_names = NULL, col_style_names = NULL) {
+add_body <- function(tab, df, left_header_colnames = NULL, row_style_names = NULL, left_header_style_names = NULL, col_style_names = NULL, fill_null_with = NULL) {
 
   # Make all factors character
   i <- sapply(df, is.factor)
@@ -61,6 +61,8 @@ add_body <- function(tab, df, left_header_colnames = NULL, row_style_names = NUL
     tab$body$meta_col_ <- col_style_names
     tab$body$user_provided_col_style_names <- col_style_names
   }
+
+  if (not_null(fill_null_with)) tab$body$fill_null_with <- fill_null_with
 
   tab
 }
@@ -189,6 +191,11 @@ body_write_rows <- function(tab) {
     col <- min(body_get_wb_cols(tab))
     row <- min(body_get_wb_rows(tab))
 
+    if(not_null(tab$body$fill_null_with)){
+      dd <- dim(data)
+      null_matrix <- as.data.frame(matrix(rep(tab$body$fill_null_with, dd[1]*dd[2]), nrow = dd[1], ncol = dd[2]))
+      openxlsx::writeData(tab$wb, ws_name, null_matrix, startRow = row, startCol = col, colNames = FALSE)
+    }
     openxlsx::writeData(tab$wb, ws_name, data, startRow = row, startCol = col, colNames = FALSE)
 
     tab

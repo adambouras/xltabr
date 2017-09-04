@@ -113,7 +113,8 @@ auto_crosstab_to_wb <-
            auto_merge = TRUE,
            insert_below_tab = NULL,
            total_text = NULL,
-           include_header_rows = TRUE ) {
+           include_header_rows = TRUE,
+           fill_null_with = NULL) {
 
   top_header_provided <- TRUE
   if (is.null(top_headers)) {
@@ -128,7 +129,7 @@ auto_crosstab_to_wb <-
     tab <- xltabr::add_top_headers(tab, top_headers)
   }
 
-  tab <- xltabr::add_body(tab, df,left_header_colnames = left_header_colnames)
+  tab <- xltabr::add_body(tab, df, left_header_colnames = left_header_colnames, fill_null_with = fill_null_with)
 
   if (is.null(left_header_colnames)) {
     tab <- xltabr:::auto_detect_left_headers(tab)

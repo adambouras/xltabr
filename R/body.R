@@ -191,13 +191,23 @@ body_write_rows <- function(tab) {
     col <- min(body_get_wb_cols(tab))
     row <- min(body_get_wb_rows(tab))
 
-    if(not_null(tab$body$fill_null_with)){
-      dd <- dim(data)
-      null_matrix <- as.data.frame(matrix(rep(tab$body$fill_null_with, dd[1]*dd[2]), nrow = dd[1], ncol = dd[2]))
-      openxlsx::writeData(tab$wb, ws_name, null_matrix, startRow = row, startCol = col, colNames = FALSE)
-    }
+    # if(not_null(tab$body$fill_null_with)){
+    # na_rows <- NULL
+    # na_cols <- NULL
+    # for (c in 1:ncol(data)){
+    #   na_rows <- c(na_rows,rowValues[is.na(data[,c])])
+    #   lr <- length(rowValues[is.na(data[,c])])
+    #   if(lr != 0) na_cols <- c(na_cols, rep(c, lr))
+    # }
+    # }
     openxlsx::writeData(tab$wb, ws_name, data, startRow = row, startCol = col, colNames = FALSE)
 
+    if(not_null(tab$body$fill_null_with)){
+      row_values <- body_get_wb_rows(tab)
+      for (c in 1:ncol(data)){
+        for (r in row_values[is.na(data[,c])]) openxlsx::writeData(tab$wb, ws_name, "*", startRow = r, startCol = c, colNames = FALSE)
+      }
+    }
     tab
 
 }

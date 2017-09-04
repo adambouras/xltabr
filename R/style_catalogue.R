@@ -19,7 +19,7 @@ style_catalogue_initialise <- function(tab, styles_xlsx = NULL, num_styles_csv =
 style_catalogue_import_num_formats <- function(tab, path){
   # This lookup table coverts
 
-  lookup_df <- read.csv(path, stringsAsFactors = FALSE)
+  lookup_df <- read.csv(path, stringsAsFactors = FALSE, quote = "\"'")
 
   # Convert dataframe into two vectors
   style_keys <- lookup_df$excel_format
@@ -51,12 +51,6 @@ style_catalogue_xlsx_import <- function(tab, path) {
       if (is.null(value)) {
         next
       }
-
-      # tmp_list <- list()
-      # tmp_list$style <- i$style
-
-      # cell <- openxlsx::readWorkbook(wb, rows = r, cols = c + 1, colNames = FALSE, rowNames = FALSE)
-      # tmp_list$rowHeight <- cell[1, 1]
 
       style_list <- convert_style_object(i$style)
       style_key <- create_style_key(style_list)
@@ -199,6 +193,8 @@ convert_style_object <- function(style, convert_to_S4 = FALSE){
       out_style[["fillFg"]] <- NULL
       out_style[["fillBg"]] <- NULL
     }
+
+    # if(is.null(out_style[["halign"]])) out_style[["halign"]] <- "right"
     return(out_style)
   }
 }
